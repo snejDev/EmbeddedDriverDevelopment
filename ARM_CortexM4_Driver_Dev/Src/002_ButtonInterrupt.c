@@ -2,7 +2,7 @@
  * 002_ButtonInterrupt.c
  *
  *  Created on: Oct 28, 2022
- *      Author: a1c2c
+ *      Author: snejdev
  */
 
 #include <stdint.h>
@@ -67,9 +67,3 @@ void delay()
 {
 	for(int i=0;i<500000;i++);
 }
-
-
-
-
-
-
