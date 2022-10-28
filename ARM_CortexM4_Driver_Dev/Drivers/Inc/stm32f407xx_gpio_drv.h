@@ -1,12 +1,12 @@
 /*
- * stm32f404xx_gpio_drv.h
+ * stm32f407xx_gpio_drv.h
  *
  *  Created on: Oct 22, 2022
  *      Author: snejdev
  */
 
-#ifndef STM32F404XX_GPIO_DRV_H_
-#define STM32F404XX_GPIO_DRV_H_
+#ifndef STM32F407XX_GPIO_DRV_H_
+#define STM32F407XX_GPIO_DRV_H_
 
 #include <stdint.h>
 #include <stddef.h>
