@@ -107,4 +107,4 @@ void GPIO_ToggleOpin(GPIO_RegDef_t *pGPIOx, uint8_t PinNo);
 void GPIO_IRQconfig(uint8_t IRQ_Number, uint8_t EN_DI, uint32_t IRQ_Priority);
 void GPIO_IRQhandler(uint8_t PinNo);
 
-#endif /* STM32F404XX_GPIO_DRV_H_ */
+#endif /* STM32F407XX_GPIO_DRV_H_ */
