@@ -101,7 +101,6 @@
 #define USART1_BASEADDR		(APB2PERIPH_BASE+0x1000)	//USART1 Baseaddress
 #define USART6_BASEADDR		(APB2PERIPH_BASE+0x1400)	//USART6 Baseaddress
 #define SPI1_BASEADDR		(APB2PERIPH_BASE+0x3000)	//SPI1 Baseaddress
-#define SPI4_BASEADDR		(APB2PERIPH_BASE+0x3400)	//SPI4 Baseaddress
 #define SYSCFG_BASEADDR		(APB2PERIPH_BASE+0x3800)	//SYSCFG Baseaddress
 #define EXTI_BASEADDR		(APB2PERIPH_BASE+0x3C00)	//EXTI Baseaddress
 
@@ -156,6 +155,20 @@ typedef struct
 	//__vo uint32_t RCC_DCKCFGR;
 }RCC_RegDef_t;
 
+//SPI Register Definition Structure
+typedef struct
+{
+	__vo uint32_t SPI_CR1;			//0x00
+	__vo uint32_t SPI_CR2;			//0x04
+	__vo uint32_t SPI_SR;			//0x08
+	__vo uint32_t SPI_DR;			//0x0C
+	__vo uint32_t SPI_CRCPR;		//0x10
+	__vo uint32_t SPI_RXCRCR;		//0x14
+	__vo uint32_t SPI_TXCRCR;		//0x18
+	__vo uint32_t SPI_I2SCFGR;		//0x1C
+	__vo uint32_t SPI_I2SPR;		//0x20
+}SPIx_RegDef_t;
+
 //SYSCFG Register Definition Structure
 typedef struct
 {										//Address offsets
@@ -194,12 +207,17 @@ typedef struct
 #define RCCCLK				((RCC_RegDef_t*)RCC_BASEADDR) 		//Storing Typecasted base address of RCC clock Base address
 
 //EXTI Register macro definition
-#define EXTI				((EXTI_RegDef_t*)EXTI_BASEADDR)		//Storing Typecasted base address of each EXTI Base address
-//SYSCFG Register macro Definition
-#define SYSCFG				((SYSCFG_RegDef_t*)SYSCFG_BASEADDR) //Storing Typecasted base address of each EXTI Base address
+#define EXTI				((EXTI_RegDef_t*)EXTI_BASEADDR)		//Storing Typecasted base address of EXTI Base address
+//SYSCFG Register macro definition
+#define SYSCFG				((SYSCFG_RegDef_t*)SYSCFG_BASEADDR) //Storing Typecasted base address of SYSCFG Base address
+
+//SPI Register macro definition
+#define SPI1				((SPIx_RegDef_t*)SPI1_BASEADDR)		//Storing Typecasted base address of SPI1 Base address
+#define SPI2				((SPIx_RegDef_t*)SPI2_BASEADDR)		//Storing Typecasted base address of SPI2 Base address
+#define SPI3				((SPIx_RegDef_t*)SPI3_BASEADDR)		//Storing Typecasted base address of SPI3 Base address
 
 /***Peripheral clocks enable and disable***/
-//GPIOx Peripheral clock enable
+//GPIOx Peripheral clock Enable/Disable
 #define GPIOA_PCLK_EN()		(RCCCLK->AHB1ENR |= (0x01<<0))
 #define GPIOB_PCLK_EN()		(RCCCLK->AHB1ENR |= (0x01<<1))
 #define GPIOC_PCLK_EN()		(RCCCLK->AHB1ENR |= (0x01<<2))
@@ -209,8 +227,6 @@ typedef struct
 #define GPIOG_PCLK_EN()		(RCCCLK->AHB1ENR |= (0x01<<6))
 #define GPIOH_PCLK_EN()		(RCCCLK->AHB1ENR |= (0x01<<7))
 #define GPIOI_PCLK_EN()		(RCCCLK->AHB1ENR |= (0x01<<8))
-
-//GPIOx Peripheral clock disable
 #define GPIOA_PCLK_DI()		(RCCCLK->AHB1ENR &= ~(0x01<<0))
 #define GPIOB_PCLK_DI()		(RCCCLK->AHB1ENR &= ~(0x01<<1))
 #define GPIOC_PCLK_DI()		(RCCCLK->AHB1ENR &= ~(0x01<<2))
@@ -221,8 +237,17 @@ typedef struct
 #define GPIOH_PCLK_DI()		(RCCCLK->AHB1ENR &= ~(0x01<<7))
 #define GPIOI_PCLK_DI()		(RCCCLK->AHB1ENR &= ~(0x01<<8))
 
-//SYSCFG Clock Enable
+//SYSCFG Clock Enable/Disable
 #define SYSCFG_CLK_EN()		(RCCCLK->APB2ENR |= (1<<14))
+#define SYSCFG_CLK_DI()		(RCCCLK->APB2ENR &= ~(1<<14))
+
+//SPI Clock Enable/Disable
+#define SPI1_CLK_EN()		(RCCCLK->APB2PERIPH_BASE &= ~(1<<12))
+#define SPI2_CLK_EN()		(RCCCLK->APB1PERIPH_BASE &= ~(1<<14))
+#define SPI3_CLK_EN()		(RCCCLK->APB1PERIPH_BASE &= ~(1<<15))
+#define SPI1_CLK_DI()		(RCCCLK->APB2PERIPH_BASE &= ~(1<<12))
+#define SPI2_CLK_DI()		(RCCCLK->APB1PERIPH_BASE &= ~(1<<14))
+#define SPI3_CLK_DI()		(RCCCLK->APB1PERIPH_BASE &= ~(1<<15))
 /***Peripheral clocks enable and disable***/
 
 #define ENABLE		1
