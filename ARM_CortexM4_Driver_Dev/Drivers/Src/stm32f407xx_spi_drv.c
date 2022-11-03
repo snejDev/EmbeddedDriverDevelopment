@@ -8,6 +8,8 @@
 #include "stm32f407xx.h"
 #include "stm32f407xx_spi_drv.h"
 
+uint8_t FlagStatus(SPI_RegDef_t *pGPIOx, uint32_t flag);
+
 //	API Implementation
 /*
  * 	@function				: SPI_PCLK_Ctrl
@@ -66,46 +68,81 @@ void SPI_Init(SPIx_Handle_t *pSPIx_Handle)
 
 	//Bus Configurations
 	if(pSPIx_Handle->SPIx_PinConfig.SPI_BusConfig == BUSCONF_FULLDUP)
-		temp &= ~(1<<BIDIMODE);		//Bi-directional Mode
+		temp &= ~(1<<SPI_CR1_BIDIMODE);		//2-line bi-directional Mode - BIDI mode is cleared
 	else if(pSPIx_Handle->SPIx_PinConfig.SPI_BusConfig == BUSCONF_HALFDUP)
 	{
-		temp |= (1<<BIDIOE);			//Tx/Rx
-		temp |= (1<<BIDIMODE);
+		//Handle BIDIOE in the application
+		//temp |= (1<<BIDIOE);		//Tx/Rx - OUTPUT EN in Bi-directional mode
+		temp |= (1<<SPI_CR1_BIDIMODE);		//1-line bi-directional - BIDI mode is set
 	}
 	else if(pSPIx_Handle->SPIx_PinConfig.SPI_BusConfig == BUSCONF_SIMP_RX)
 	{
-		//Enable bidirectional mode
-		temp |= ~(1<<BIDIMODE);
-		//Assert RX only to force clock output to slave
-		temp |= (1<<RXONLY);
+		//Enable 2-line bi-directional mode -  BIDI mode is cleared
+		temp |= ~(1<<SPI_CR1_BIDIMODE);
+		//Set RX only to force clock output to slave
+		temp |= (1<<SPI_CR1_RXONLY);
 	}
 	else if(pSPIx_Handle->SPIx_PinConfig.SPI_BusConfig == BUSCONF_SIMP_TX) //Full-Duplex Mode with MISO disconnected
-		temp &= ~(1<<BIDIMODE);		//Disconnect MISO line
+		temp &= ~(1<<SPI_CR1_BIDIMODE);		//2line bi-directional - Disconnect MISO line
 
 	//Data Frame Format
-	temp |= (pSPIx_Handle->SPIx_PinConfig.SPI_BusConfig << DFF);
+	temp |= (pSPIx_Handle->SPIx_PinConfig.SPI_BusConfig << SPI_CR1_DFF);
 
 	//Clock Phase
-	temp |= pSPIx_Handle->SPIx_PinConfig.SPI_CPHA << CPHA;
+	temp |= pSPIx_Handle->SPIx_PinConfig.SPI_CPHA << SPI_CR1_CPHA;
 
 	//Clock Polarity
-	temp |= pSPIx_Handle->SPIx_PinConfig.SPI_CPOL << CPOL;
+	temp |= pSPIx_Handle->SPIx_PinConfig.SPI_CPOL << SPI_CR1_CPOL;
 
 	//Slave Select Management
 	if(pSPIx_Handle->SPIx_PinConfig.SPI_SSM == SSM_HWM)
-		temp &= ~(1 << SSM);
+		temp &= ~(1 << SPI_CR1_SSM);		//SPI_CR1_SSM bit disabled
 	else if(pSPIx_Handle->SPIx_PinConfig.SPI_SSM == SSM_SWM)
-		temp |= 1<<SSM;
+		temp |= 1<<SPI_CR1_SSM;				//SPI_CR1_SSM bit enabled
 
 	//Serial Clock Speed
-	temp |= (pSPIx_Handle->SPIx_PinConfig.SPI_SclkSpeed)<<5;
+	temp |= (pSPIx_Handle->SPIx_PinConfig.SPI_SclkSpeed)<<SPI_CR1_BR;
+
+	pSPIx_Handle->pSPIx->SPI_CR1 &= ~(temp);
+	pSPIx_Handle->pSPIx->SPI_CR1 |= temp;
 }
 
+/*
+ * 	@function				: SPI_TxData
+ * 	@info					: SPI Transmit data
+ *
+ * 	@param[in]_datatypes	: SPI_RegDef_t, uint8_t, uint32_t
+ * 	@param[in] variables	: SPI_RegDef_t *pSPIx, uint8_t *pTxBuff, uint32_t len
+ *
+ * 	@return					: void
+ *
+ * 	@notes					: API for transmitting SPI data
+ */
+void SPI_TxData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuff, uint32_t len)
+{
+	//Tx Data Blocking Call API -  Blocks program execution till all data is transmitted
+	while(len>0)
+	{
+		while(!(FlagStatus(pSPIx, SPI_SR_TXEM)));		//Wait till TXE is set - Tx buffer is empty
 
+		if(pSPIx->SPI_CR1 & (1<<SPI_CR1_DFF))
+		{
+			pSPIx->SPI_DR = *((uint16_t*)pTxBuff);		//Load Data Register
+			(uint16_t*)pTxBuff++;						//Increment pointer by 16 bits
+			len-=2;
+		}
+		else
+		{
+			pSPIx->SPI_DR = *((uint8_t*)pTxBuff);		//Load Data Register
+			(uint8_t*)pTxBuff++;						//Increment pointer by 8 bits
+			len--;
+		}
+	}
+}
 
-
-
-
-
-
-
+uint8_t FlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag)
+{
+	if(pSPIx->SPI_SR & flag)
+		return SET;
+	return RESET;
+}
