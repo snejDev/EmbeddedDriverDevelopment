@@ -11,13 +11,22 @@
 #include "stm32f407xx.h"
 
 //SPI_CR1 Register Bit-fields
-#define CPHA		0
-#define CPOL 		1
-#define SSM 		9
-#define RXONLY		10
-#define DFF			11
-#define BIDIOE		14
-#define BIDIMODE	15
+#define SPI_CR1_CPHA		0
+#define SPI_CR1_CPOL 		1
+#define SPI_CR1_BR			3
+#define SPI_CR1_SSM 		9
+#define SPI_CR1_RXONLY		10
+#define SPI_CR1_DFF			11
+#define SPI_CR1_BIDIOE		14
+#define SPI_CR1_BIDIMODE	15
+
+//SPI_SR Register Bit-fields
+#define SPI_SR_RXE 		0
+#define SPI_SR_TXE		1
+
+//SPI_SR Flag Mask
+#define SPI_SR_TXEM		(1<<SPI_SR_TXE)
+#define SPI_SR_RXEM		(1<<SPI_SR_RXE)
 
 //Device Modes
 //@SPI_DeviceMode
