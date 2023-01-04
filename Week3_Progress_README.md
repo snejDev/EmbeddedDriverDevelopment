@@ -1,1 +1,0 @@
-3rd week of internship: Completed GPIO driver development with all necessary APIs to SET/RESET and TOGGLE GPIO Pins, and handle Interrupts on any any gpio pins. Sample programs to test the drivers have been provided in the Src directory. 
