@@ -1,0 +1,8 @@
+../Drivers/Src/stm32f407xx_spi_driver.c:28:6:SPI_PCLK_Ctrl	16	static
+../Drivers/Src/stm32f407xx_spi_driver.c:62:6:SPI_Init	24	static
+../Drivers/Src/stm32f407xx_spi_driver.c:131:6:SPI_DeInit	16	static
+../Drivers/Src/stm32f407xx_spi_driver.c:158:6:SPI_TxDataB	24	static
+../Drivers/Src/stm32f407xx_spi_driver.c:192:6:SPI_EN	16	static
+../Drivers/Src/stm32f407xx_spi_driver.c:211:6:SPI_SSIConfig	16	static
+../Drivers/Src/stm32f407xx_spi_driver.c:229:6:SPI_SSOEConfig	16	static
+../Drivers/Src/stm32f407xx_spi_driver.c:249:9:FlagStatus	16	static
