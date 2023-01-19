@@ -16,7 +16,14 @@
 #define SPI_MOSI 11
 #define SPI_SS 10
 
-char dataBuff[500];
+//Command Definitions
+#define CMD_LED_CTRL      0x01
+#define CMD_SENSOR_READ   0x02
+#define CMD_LED_READ      0x03
+#define CMD_PRINT         0x04
+#define CMD_ID_READ       0x05
+
+uint8_t dataBuff;
 
 //Initialize SPI slave.
 void SPI_SlaveInit(void) 
@@ -43,7 +50,7 @@ uint8_t SPI_SlaveReceive(void)
 
 
 //sends one byte of data 
-void SPI_SlaveTransmit(char data)
+void SPI_SlaveTransmit(uint8_t data)
 {
   /* Start transmission */
   SPDR = data;
@@ -60,34 +67,27 @@ void setup()
   // Initialize SPI Slave.
   SPI_SlaveInit();
   Serial.println("Slave Initialized");
+
+  Serial.println("Slave waiting for ss to go low");
+  while(digitalRead(SS));
+
+  SPI_SlaveTransmit((uint8_t)0xF5);
+  uint8_t dummy = SPI_SlaveReceive();
+  dataBuff = SPI_SlaveReceive();
+  Serial.println(dummy);
+  Serial.println(dataBuff);
+}
+
+uint8_t CmdVerify(uint8_t dataBuff)
+{
+  if(dataBuff==0x01)
+    return 0xF5;
+  else 
+    return 0xA5;
 }
 
 // The loop function runs continuously after setup().
 void loop() 
 {
-  uint32_t i;
-  uint16_t dataLen = 0;
-  Serial.println("Slave waiting for ss to go low");
-  while(digitalRead(SS));
 
-  i = 0;
-  dataLen = SPI_SlaveReceive();
-  
-  for(i = 0 ; i < dataLen ; i++ )
-  {
-    dataBuff[i] =  SPI_SlaveReceive();
-  }
-
-
-  //  Serial.println(String(i,HEX));
-  dataBuff[i] = '\0';
-
-  Serial.print("Length:");
-  Serial.println(dataLen);
-  Serial.println("Rcvd:");
-  Serial.println(dataBuff);
 }
-
-
-   
-   

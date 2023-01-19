@@ -139,7 +139,7 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx)
 }
 
 /*
- * 	@function				: SPI_TxData
+ * 	@function				: SPI_TxDataB
  * 	@info					: Transmit Data
  *
  * 	@param[in]_datatypes	: SPI_RegDef_t*, uint8_t*, uint32_t*
@@ -158,6 +158,7 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx)
 void SPI_TxDataB(SPI_RegDef_t *pSPIx, uint8_t *pTxBuff, uint32_t len)
 {
 	//Tx Data Blocking Call API: Blocks Program execution, till all the data is transmitted
+
 	while(len>0)
 	{
 		while(!(FlagStatus(pSPIx, SPI_SR_TXEM)));	//wait until TXE bit is SET
@@ -172,6 +173,41 @@ void SPI_TxDataB(SPI_RegDef_t *pSPIx, uint8_t *pTxBuff, uint32_t len)
 		{
 			pSPIx->SPI_DR = *pTxBuff;		//DR is 8 bits
 			pTxBuff++;
+			len--;
+		}
+	}
+}
+
+/*
+ * 	@function				: SPI_RxDataB
+ * 	@info					: Receive Data
+ *
+ * 	@param[in]_datatypes	: SPI_RegDef_t*, uint8_t*, uint32_t*
+ * 	@param[in] variables	: (SPI_RegDef_t *pSPIx, uint8_t *pRxBuff, uint32_t len
+ *
+ * 	@return					: void
+ *
+ * 	@notes					: This API is very similar to TxDataB API;
+ * 							  Waits until, the RXNE bit of SR register is SET
+ * 							  As soon as the bit is SET, it copies the data from the DR to RxBuff
+ */
+void SPI_RxDataB(SPI_RegDef_t *pSPIx, uint8_t *pRxBuff, uint32_t len)
+{
+	//Tx Data Blocking Call API: Blocks Program execution, till all the data is transmitted
+	while(len>0)
+	{
+		while(!(FlagStatus(pSPIx, SPI_SR_RXNEM)));	//wait until RXNE bit is SET
+
+		if(pSPIx->SPI_CR1 & (1<<SPI_CR1_DFF))			//16 bit data Rx
+		{
+			*((uint16_t*)pRxBuff) = pSPIx->SPI_DR;		//DR is 16 bits
+			(uint16_t*)pRxBuff++;
+			len -= 2;
+		}
+		else	//8 bit data Tx
+		{
+			*pRxBuff = pSPIx->SPI_DR;		//DR is 8 bits
+			pRxBuff++;
 			len--;
 		}
 	}

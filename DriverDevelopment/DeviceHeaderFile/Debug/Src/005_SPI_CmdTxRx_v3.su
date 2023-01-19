@@ -1,0 +1,7 @@
+../Src/005_SPI_CmdTxRx_v3.c:86:6:delay	16	static
+../Src/005_SPI_CmdTxRx_v3.c:91:6:GPIO_Config	24	static
+../Src/005_SPI_CmdTxRx_v3.c:153:6:SPI_Config	24	static
+../Src/005_SPI_CmdTxRx_v3.c:182:6:ButtonResp	8	static
+../Src/005_SPI_CmdTxRx_v3.c:192:6:AckVerify	16	static
+../Src/005_SPI_CmdTxRx_v3.c:202:6:SPI_Comm	24	static
+../Src/005_SPI_CmdTxRx_v3.c:297:5:main	8	static

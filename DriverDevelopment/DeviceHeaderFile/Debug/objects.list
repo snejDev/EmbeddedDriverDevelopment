@@ -1,6 +1,6 @@
 "./Drivers/Src/stm32f407xx_gpio_drv.o"
 "./Drivers/Src/stm32f407xx_spi_driver.o"
-"./Src/004_SPI_ArduinoTx.o"
+"./Src/005_SPI_CmdTxRx_v3.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"
 "./Startup/startup_stm32f407vetx.o"

@@ -1,6 +1,7 @@
 #include "stm32f407xx.h"
 #include "stm32f407xx_gpio_drv.h"
 #include "stm32f407xx_spi_driver.h"
+#include <stdio.h>
 
 /*AF Mapping
  * 	Alternate Functionality 4
@@ -102,6 +103,7 @@ int main(void)
 	SPI_SSOEConfig(SPI2, ENABLE);	//SSOE : LOW
 
 	char data[] = "Testing Long String Serial Peripheral Interface Transmission";
+	uint8_t dataLen = strlen(data);					//calculate data length
 
 	GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, RESET);
 
@@ -115,12 +117,12 @@ int main(void)
 
 		SPI_EN(SPI2, ENABLE);							//SPE=1 : NSS pulled LOW
 
-		uint8_t dataLen = strlen(data);					//calculate data length
 		SPI_TxDataB(SPI2, &dataLen, 1);					//Tx Data length, passing data to a pointer *pTxBuff
 
 		SPI_TxDataB(SPI2,(uint8_t*)data,dataLen);	//Tx actual Data, passing data to a pointer *pTxBuff
 
-		while(FlagStatus(SPI2, SPI_SR_BSYM));
+		while(FlagStatus(SPI2, SPI_SR_BSYM))
+			GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
 
 		SPI_EN(SPI2, DISABLE);
 	}

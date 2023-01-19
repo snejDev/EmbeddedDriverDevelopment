@@ -31,12 +31,26 @@
 #define SPI_CR2_SSOE	2
 
 //SPI SR Register Bit Fields
-#define SPI_SR_TXE	1
-#define SPI_SR_BSY	7
+#define SPI_SR_RXNE		0
+#define SPI_SR_TXE		1
+#define SPI_SR_CHSIDE	2
+#define SPI_SR_UDR		3
+#define SPI_SR_CRCERR	4
+#define SPI_SR_MODF		5
+#define SPI_SR_OVR		6
+#define SPI_SR_BSY		7
+#define SPI_SR_FRE		8
 
 //SPI SR Register Masks
-#define SPI_SR_TXEM	(1<<SPI_SR_TXE)
-#define SPI_SR_BSYM	(1<<SPI_SR_BSY)
+#define SPI_SR_RXNEM	(1<<SPI_SR_RXNE)
+#define SPI_SR_TXEM		(1<<SPI_SR_TXE)
+#define SPI_SR_CHSIDEM	(1<<SPI_SR_CHSIDE)
+#define SPI_SR_UDRM		(1<<SPI_SR_UDR)
+#define SPI_SR_CRCERRM	(1<<SPI_SR_CRCERR)
+#define SPI_SR_MODFM	(1<<SPI_SR_MODF)
+#define SPI_SR_OVRM		(1<<SPI_SR_OVR)
+#define SPI_SR_BSYM		(1<<SPI_SR_BSY)
+#define SPI_SR_FREM		(1<<SPI_SR_FREM)
 
 //SPI Device Configurations
 //@SPI_DeviceConfig

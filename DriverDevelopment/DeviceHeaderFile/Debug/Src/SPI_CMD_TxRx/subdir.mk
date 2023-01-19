@@ -5,29 +5,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Src/005_SPI_CmdTxRx_v3.c \
-../Src/syscalls.c \
-../Src/sysmem.c 
+../Src/SPI_CMD_TxRx/005_SPI_CmdTxRx_v1.c 
 
 OBJS += \
-./Src/005_SPI_CmdTxRx_v3.o \
-./Src/syscalls.o \
-./Src/sysmem.o 
+./Src/SPI_CMD_TxRx/005_SPI_CmdTxRx_v1.o 
 
 C_DEPS += \
-./Src/005_SPI_CmdTxRx_v3.d \
-./Src/syscalls.d \
-./Src/sysmem.d 
+./Src/SPI_CMD_TxRx/005_SPI_CmdTxRx_v1.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Src/%.o Src/%.su: ../Src/%.c Src/subdir.mk
+Src/SPI_CMD_TxRx/%.o Src/SPI_CMD_TxRx/%.su: ../Src/SPI_CMD_TxRx/%.c Src/SPI_CMD_TxRx/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F4 -DSTM32F407VETx -c -I../Inc -I"E:/Electronics/MicrocontrollerProgramming/STM32/DriverDevelopment/DeviceHeaderFile/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
-clean: clean-Src
+clean: clean-Src-2f-SPI_CMD_TxRx
 
-clean-Src:
-	-$(RM) ./Src/005_SPI_CmdTxRx_v3.d ./Src/005_SPI_CmdTxRx_v3.o ./Src/005_SPI_CmdTxRx_v3.su ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+clean-Src-2f-SPI_CMD_TxRx:
+	-$(RM) ./Src/SPI_CMD_TxRx/005_SPI_CmdTxRx_v1.d ./Src/SPI_CMD_TxRx/005_SPI_CmdTxRx_v1.o ./Src/SPI_CMD_TxRx/005_SPI_CmdTxRx_v1.su
 
-.PHONY: clean-Src
+.PHONY: clean-Src-2f-SPI_CMD_TxRx
 

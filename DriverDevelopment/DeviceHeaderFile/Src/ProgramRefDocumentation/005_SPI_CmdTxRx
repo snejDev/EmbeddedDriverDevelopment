@@ -1,0 +1,46 @@
+* Program Description: This program enables Master Slave Communication between STM32 and Arduino
+ * STM32 - MASTER; ARDUINO UNO - SLAVE
+ *
+ * SPI Configuration
+ * Mode: Full-Duplex
+ * DFF: 8 Bit
+ * Slave Management: Hardware Slave Management
+ * SCLK Speed: 2MHz
+ *
+ * Functional Description:
+ * Master Sends a command: Slave acknowledges with a ACK byte(0xF5)/NACK byte(0xA5)
+ *
+ * If ACK: Start Transmission based on commands
+ * If NACK: End Transmission and display error message
+ *
+ *Command Definitions: Command Syntax: <cmd_code>	<arg1> <arg2>
+ * 	1) cmd_led_ctrl	<pin_no>  <value>
+ * 	   <pin_no>	: Digital pin of Arduino UNO(0 to 9)
+ * 	   <value>	: ON(1),OFF(0)
+ * 	   Slave Action : Control the digital pin(on/off)
+ * 	   Slave Return	: void
+ *
+ * 	2) cmd_sensor_read	<analog_pin_no>
+ * 	   <analog_pin_no>	: Analog Pin of Arduino
+ * 	   Slave Action	: Slave should read the analog value of the supplied pin
+ * 	   Slave Return : 1 byte of analog read value
+ *
+ * 	3) cmd_led_read	<pin_no>
+ * 	   <pin_no>	: Digital pin of the slave, where the LED is connected to
+ * 	   Slave Action : Slave should read the status of the LED
+ * 	   Slave Return : 1 byte of status reading(ON/OFF)
+ *
+ * 	4) cmd_print	<len>  <message>
+ * 	   <len>	: Length of the text being sent
+ * 	   Slave Action	: Print the sent data
+ * 	   Slave Return	: void
+ *
+ * 	5) cmd_id_read
+ * 	   Slave Action	: Return the slave ID
+ * 	   Slave Return	: 10 bytes of slave ID string
+ *
+ *Application Workflow: Start -> First Button Press		: cmd_led_ctrl
+ * 								 Second Button Press	: cmd_sensor_read
+ * 								 Third Button Press		: cmd_led_read
+ * 								 Fourth Button Press	: cmd_print
+ * 								 Fifth Button Press		: cmd_id_read		-> Start
