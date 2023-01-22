@@ -51,6 +51,12 @@
  * 								 Fourth Button Press	: cmd_print
  * 								 Fifth Button Press		: cmd_id_read		-> Start
  *
+ * Using Semi-hosting to debug and get printfs working
+ * 1. Linker argument settings: -specs-rdimon.specs -lc -lrdimon
+ * 2. Debug configuration of your application: monitor arm semishoting enable
+ * 3: Include the following codes in main.c: extern void initialise _monitor_handles();
+ * 											 initialise_monitor_handles()
+ *
  */
 
 #include "stm32f407xx.h"
@@ -289,6 +295,45 @@ void SPI_Comm()
 
 		else if(i==3)
 		{
+			char data[] = "Testing CMD_Print Command";
+			uint8_t len = strlen(data);
+
+			CMD_CODE = CMD_PRINT;
+			SPI_TxDataB(SPI2,&CMD_CODE,1);
+
+			SPI_RxDataB(SPI2,&DummyRead,1);
+			SPI_TxDataB(SPI2,&DummyByte,1);
+			SPI_RxDataB(SPI2,&ACK_BYTE,1);
+			if(!(AckVerify(ACK_BYTE)))			//enter if-block, if AckVerify returns false
+				break;
+
+			//Functionality Definition
+			SPI_TxDataB(SPI2,&len,1);
+			SPI_TxDataB(SPI2,(uint8_t*)data,len);
+		}
+
+		else if(i==4)
+		{
+			unsigned char SlaveID[11];
+
+			CMD_CODE = CMD_ID_READ;
+			SPI_TxDataB(SPI2,&CMD_CODE,1);
+
+			SPI_RxDataB(SPI2,&DummyRead,1);
+			SPI_TxDataB(SPI2,&DummyByte,1);
+			SPI_RxDataB(SPI2,&ACK_BYTE,1);
+			if(!(AckVerify(ACK_BYTE)))			//enter if-block, if AckVerify returns false
+				break;
+
+			//Functionality Description
+			SPI_RxDataB(SPI2,&DummyRead,1);
+			for(int i=0;i<10;i++)
+			{
+				SPI_TxDataB(SPI2,&DummyByte,1);
+				SPI_RxDataB(SPI2,(SlaveID+i),1);
+			}
+			SlaveID[11] = '\0';
+			SPI_TxDataB(SPI2,SlaveID,11);
 		}
 
 		while(FlagStatus(SPI2, SPI_SR_BSYM));

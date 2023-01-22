@@ -24,6 +24,7 @@
 #define CMD_ID_READ       0x05
 
 uint8_t dataBuff;
+char Data[500];
 
 //Initialize SPI slave.
 void SPI_SlaveInit(void) 
@@ -71,7 +72,7 @@ void setup()
 
 uint8_t CmdVerify(uint8_t dataBuff)
 {
-  if((dataBuff==CMD_LED_CTRL)||(dataBuff==CMD_LED_READ)||(dataBuff==CMD_SENSOR_READ))
+  if((dataBuff==CMD_LED_CTRL)||(dataBuff==CMD_LED_READ)||(dataBuff==CMD_SENSOR_READ)||(dataBuff==CMD_PRINT)||(dataBuff==CMD_ID_READ))
     return 0xF5;
   else 
     return 0xA5;
@@ -120,6 +121,42 @@ void loop()
         uint8_t dummy = SPI_SlaveReceive();
         break;
       }
+
+      case CMD_PRINT:
+      {
+        int i = 0;
+        uint32_t len = SPI_SlaveReceive();
+        for(i=0;i<len;i++)
+          Data[i] = SPI_SlaveReceive();
+        Data[i] = '\0';
+
+        Serial.print("Data Length: ");
+        Serial.println(len);
+        Serial.print("Data: ");
+        Serial.println(Data);
+        uint8_t dummy = SPI_SlaveReceive();
+        break;
+      }
+
+      case CMD_ID_READ:
+      {
+        int i=0;
+        unsigned char SlaveID[10] = "SlaveID_1";
+        for(i=0;i<10;i++)          
+          SPI_SlaveTransmit(SlaveID);
+          
+        for(i=0;i<11;i++)
+          Data[i] = SPI_SlaveReceive();
+        Data[i] = '\0';
+
+        Serial.print("Data Length: ");
+        Serial.println(11);
+        Serial.print("Data: ");
+        Serial.println(Data);
+        uint8_t dummy = SPI_SlaveReceive();
+        break;
+      }
+      
       
       default: Serial.println("Invalid Command");
     }
