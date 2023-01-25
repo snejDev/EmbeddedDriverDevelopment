@@ -1,4 +1,12 @@
 /*
+ * 005_SPICmdTxRx_RxTest.c
+ *
+ *  Created on: Jan 23, 2023
+ *      Author: snejDev
+ */
+
+
+/*
  * 005_SPI_CmdTxRx.c
  *
  *  Created on: Jan 19, 2023
@@ -208,114 +216,23 @@ bool AckVerify(uint8_t ACK_BYTE)
 
 void SPI_Comm()
 {
-	int i=0;
+	int i=1;
 	SPI_SSOEConfig(SPI2, ENABLE);		//SSOE : LOW
 
-	for(i=0;i<5;i++)
+	for(i=1;i<5;i++)
 	{
 		uint8_t CMD_CODE;			//To store the command code
 		uint8_t ACK_BYTE;			//To store the receieved acknowledgement
 		uint8_t DummyByte = 0xFF;	//Dummy byte to initialize SPI Slave Transfer
 		uint8_t DummyRead;
-		uint8_t args[2];
+		//uint8_t args[2];
 
 		ButtonResp();
 
 		//SPI Tx/Rx Configurations
 		SPI_EN(SPI2, ENABLE);
 
-		if(i==0)
-		{
-			args[0] = DPin;
-			args[1] = value;
-
-			CMD_CODE = CMD_LED_CTRL;
-			SPI_TxDataB(SPI2,&CMD_CODE,1);					//CMD_LED_CTRL
-			//Dummy Read to clear RXNE: Clear Rx Buffer
-			SPI_RxDataB(SPI2,&DummyRead,1);
-			//SPI Slave doesn't initiate Tx, thereby send dummy byte to shift from SR of Slave to SR of Master
-			//Sending 8Bit Dummy value, cause SPI is configured with DFF = 8 bits
-			SPI_TxDataB(SPI2, &DummyByte,1);
-			SPI_RxDataB(SPI2,&ACK_BYTE,1);
-			if(!(AckVerify(ACK_BYTE)))	//enter if-block, if AckVerify returns false
-				break;
-
-			//Functionality Definition
-			SPI_TxDataB(SPI2,args,2);				//Digital Pin
-		}
-
-		else if(i==1)
-		{
-			uint8_t analogRead;
-
-			CMD_CODE = CMD_SENSOR_READ;
-			SPI_TxDataB(SPI2,&CMD_CODE,1);
-
-			SPI_RxDataB(SPI2,&DummyRead,1);
-			SPI_TxDataB(SPI2,&DummyByte,1);
-			SPI_RxDataB(SPI2,&ACK_BYTE,1);
-			if(!(AckVerify(ACK_BYTE)))			//enter if-block, if AckVerify returns false
-				break;
-
-			//Functionality Definition
-			args[0] = ANALOG_PIN0;
-			SPI_TxDataB(SPI2,args,1);
-			SPI_RxDataB(SPI2,&DummyRead,1);		//Clear RXNE bit
-			delay();
-			SPI_TxDataB(SPI2,&DummyByte,1);
-			SPI_RxDataB(SPI2,&analogRead,1);
-			printf("Analog Value: %d\n",analogRead);
-			GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
-			delay();
-			delay();
-		}
-
-		else if(i==2)
-		{
-			uint8_t ledRead;
-
-			CMD_CODE = CMD_LED_READ;
-			SPI_TxDataB(SPI2,&CMD_CODE,1);
-
-			SPI_RxDataB(SPI2,&DummyRead,1);
-			SPI_TxDataB(SPI2,&DummyByte,1);
-			SPI_RxDataB(SPI2,&ACK_BYTE,1);
-			if(!(AckVerify(ACK_BYTE)))			//enter if-block, if AckVerify returns false
-				break;
-
-			//Functionality Definition
-			args[0] = ANALOG_PIN0;
-			SPI_TxDataB(SPI2,args,1);
-			SPI_RxDataB(SPI2,&DummyRead,1);		//Clear RXNE bit
-			delay();
-			SPI_TxDataB(SPI2,&DummyByte,1);
-			SPI_RxDataB(SPI2,&ledRead,1);
-			printf("LED Status: %d",ledRead);
-			GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
-			delay();
-			delay();
-		}
-
-		else if(i==3)
-		{
-			char data[] = "Testing CMD_Print Command";
-			uint8_t len = strlen(data);
-
-			CMD_CODE = CMD_PRINT;
-			SPI_TxDataB(SPI2,&CMD_CODE,1);
-
-			SPI_RxDataB(SPI2,&DummyRead,1);
-			SPI_TxDataB(SPI2,&DummyByte,1);
-			SPI_RxDataB(SPI2,&ACK_BYTE,1);
-			if(!(AckVerify(ACK_BYTE)))			//enter if-block, if AckVerify returns false
-				break;
-
-			//Functionality Definition
-			SPI_TxDataB(SPI2,&len,1);
-			SPI_TxDataB(SPI2,(uint8_t*)data,len);
-		}
-
-		else if(i==4)
+		if(i==1)
 		{
 			unsigned char SlaveID[10];
 
@@ -329,16 +246,19 @@ void SPI_Comm()
 				break;
 
 			//Functionality Description
-			for(int i=0;i<9;i++)
+			for(int i=0;i<10;i++)
 			{
 				SPI_RxDataB(SPI2,&DummyRead,1);
 				SPI_TxDataB(SPI2,&DummyByte,1);
 				SPI_RxDataB(SPI2,(unsigned char*)(SlaveID+i),1);
+				delay();
 			}
 			SlaveID[9] = '\0';
 
 			if(strcmp(SlaveID,"SlaveID_1")==0)
 				GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
+
+			printf("Received Slave ID: %s \n",SlaveID);
 		}
 
 		while(FlagStatus(SPI2, SPI_SR_BSYM));
@@ -349,6 +269,7 @@ void SPI_Comm()
 int main(void)
 {
 	//Configure SPI and GPIO
+	printf("Prgm");
 	GPIO_Config();
 	SPI_Config();
 

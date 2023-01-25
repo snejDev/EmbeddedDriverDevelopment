@@ -10,7 +10,9 @@
  
  */
 #include <SPI.h>
-#include<stdint.h>  
+#include <stdint.h>  
+#include "string.h"
+
 #define SPI_SCK 13
 #define SPI_MISO 12
 #define SPI_MOSI 11
@@ -134,31 +136,24 @@ void loop()
         Serial.println(len);
         Serial.print("Data: ");
         Serial.println(Data);
-        uint8_t dummy = SPI_SlaveReceive();
         break;
+
+        //Dont Dummy Rx after you Rx/Tx through iterations
       }
 
       case CMD_ID_READ:
-      {
+      { 
         int i=0;
         unsigned char SlaveID[10] = "SlaveID_1";
-        for(i=0;i<10;i++)          
-          SPI_SlaveTransmit(SlaveID);
-          
-        for(i=0;i<11;i++)
-          Data[i] = SPI_SlaveReceive();
-        Data[i] = '\0';
-
-        Serial.print("Data Length: ");
-        Serial.println(11);
-        Serial.print("Data: ");
-        Serial.println(Data);
-        uint8_t dummy = SPI_SlaveReceive();
+        
+        for(i=0;i<9;i++)        
+          SPI_SlaveTransmit(*(SlaveID+i));
+     
         break;
       }
-      
-      
+            
       default: Serial.println("Invalid Command");
     }
+    Serial.println(dataBuff);
   } 
 }
