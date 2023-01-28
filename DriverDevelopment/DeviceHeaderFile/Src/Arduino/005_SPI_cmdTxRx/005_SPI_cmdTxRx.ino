@@ -144,11 +144,13 @@ void loop()
       case CMD_ID_READ:
       { 
         int i=0;
-        unsigned char SlaveID[10] = "SlaveID_1";
-        
-        for(i=0;i<9;i++)        
+        uint8_t SlaveID[10] = "SlaveID_01";
+
+        for(i=0;i<strlen(SlaveID);i++)        
           SPI_SlaveTransmit(*(SlaveID+i));
-     
+
+        SPI_SlaveReceive();
+        Serial.println("DataTx Complete");
         break;
       }
             

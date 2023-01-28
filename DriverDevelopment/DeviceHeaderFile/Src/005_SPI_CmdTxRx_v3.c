@@ -199,10 +199,7 @@ void ButtonResp()
 bool AckVerify(uint8_t ACK_BYTE)
 {
 	if(ACK_BYTE==245)
-	{
-		GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
 		return true;
-	}
 	return false;
 }
 
@@ -290,7 +287,7 @@ void SPI_Comm()
 			delay();
 			SPI_TxDataB(SPI2,&DummyByte,1);
 			SPI_RxDataB(SPI2,&ledRead,1);
-			printf("LED Status: %d",ledRead);
+			printf("LED Status: %d\n",ledRead);
 			GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
 			delay();
 			delay();
@@ -313,11 +310,12 @@ void SPI_Comm()
 			//Functionality Definition
 			SPI_TxDataB(SPI2,&len,1);
 			SPI_TxDataB(SPI2,(uint8_t*)data,len);
+			SPI_RxDataB(SPI2,&DummyRead,1);
 		}
 
 		else if(i==4)
 		{
-			unsigned char SlaveID[10];
+			uint8_t SlaveID[11];
 
 			CMD_CODE = CMD_ID_READ;
 			SPI_TxDataB(SPI2,&CMD_CODE,1);
@@ -328,19 +326,20 @@ void SPI_Comm()
 			if(!(AckVerify(ACK_BYTE)))			//enter if-block, if AckVerify returns false
 				break;
 
+			//printf("Acknowledged\n");
 			//Functionality Description
-			for(int i=0;i<9;i++)
+			for(int i=0;i<10;i++)
 			{
-				SPI_RxDataB(SPI2,&DummyRead,1);
 				SPI_TxDataB(SPI2,&DummyByte,1);
-				SPI_RxDataB(SPI2,(unsigned char*)(SlaveID+i),1);
+				SPI_RxDataB(SPI2,(SlaveID+i),1);
+				//printf("%d\n",i);
 			}
-			SlaveID[9] = '\0';
-
-			if(strcmp(SlaveID,"SlaveID_1")==0)
-				GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);
+			delay();
+			SlaveID[10] = '\0';
+			printf("%s\n",SlaveID);
+			/*if(strcmp(SlaveID,"SlaveID_1")==0)
+				GPIO_OPinWrite(GPIOD, GPIO_PINNO_2, SET);*/
 		}
-
 		while(FlagStatus(SPI2, SPI_SR_BSYM));
 		SPI_EN(SPI2, DISABLE);
 	}
@@ -349,7 +348,7 @@ void SPI_Comm()
 int main(void)
 {
 	//Configure SPI and GPIO
-	GPIO_Config();
+ 	GPIO_Config();
 	SPI_Config();
 
 	SPI_Comm();
