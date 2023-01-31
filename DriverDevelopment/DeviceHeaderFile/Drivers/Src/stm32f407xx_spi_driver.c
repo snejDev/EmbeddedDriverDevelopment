@@ -289,4 +289,58 @@ uint8_t FlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag)
 	return RESET;
 }
 
+/* 	@function				: SPI_IRQconfig
+ * 	@info					: IRQ Configuration
+ *
+ * 	@param[in]_datatypes	: uint8_t, uint8_t, uint8_t
+ * 	@param[in] variables	: IRQ_Number, EN_DI, IRQ_Priority
+ * 	@return					: void
+ *
+ * 	@notes					: API for Interrupt configuration
+ */
+void SPI_IRQconfig(uint8_t IRQ_Number, uint8_t EN_DI, uint32_t IRQ_Priority)
+{
+	if(EN_DI == ENABLE)
+	{
+		if(IRQ_Number<=31)
+		{
+			//Assert bits to ISER0 Register
+			*NVIC_ISER0 |= 1<<(IRQ_Number);
+		}
+		else if(IRQ_Number>31 && IRQ_Number<=63)
+		{
+			//Assert bits to ISER1 Register
+			*NVIC_ISER0 |= 1<<(IRQ_Number%32);
+		}
+		else if(IRQ_Number>31 && IRQ_Number<=63)
+		{
+			//Assert bits to ISER0 Register
+			*NVIC_ISER0 |= 1<<(IRQ_Number%64);
+		}
+	}
+	else if(EN_DI==DISABLE)
+	{
+		if(IRQ_Number<=31)
+		{
+			//Assert bits to IC0ER0 Register
+			*NVIC_ICER0 |= 1<<(IRQ_Number);
+		}
+		else if(IRQ_Number>31 && IRQ_Number<=63)
+		{
+			//Assert bits to ICER1 Register
+			*NVIC_ICER0 |= 1<<(IRQ_Number%32);
+		}
+		else if(IRQ_Number>31 && IRQ_Number<=63)
+		{
+			//Assert bits to ICER0 Register
+			*NVIC_ICER0 |= 1<<(IRQ_Number%64);
+		}
+
+		/**Interrupt Priority Configuration**/
+		uint8_t iprx = IRQ_Number/4;
+		uint8_t shift = ((IRQ_Number%4)*8)+(8-IMPLEMENTED_BITS); //Implemented bits are not available
+		*(NVIC_IPR_BASE+(iprx)) |= (IRQ_Priority<<shift);
+	}
+}
+
 

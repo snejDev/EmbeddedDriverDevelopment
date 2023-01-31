@@ -137,7 +137,6 @@ void loop()
         Serial.print("Data: ");
         Serial.println(Data);
         break;
-
         //Dont Dummy Rx after you Rx/Tx through iterations
       }
 
@@ -153,7 +152,7 @@ void loop()
         Serial.println("DataTx Complete");
         break;
       }
-            
+       
       default: Serial.println("Invalid Command");
     }
     Serial.println(dataBuff);

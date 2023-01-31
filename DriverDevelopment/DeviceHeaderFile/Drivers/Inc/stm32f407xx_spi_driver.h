@@ -126,6 +126,7 @@ void SPI_RxDataB(SPI_RegDef_t *pSPIx, uint8_t *pRxBuff, uint32_t len);
 void SPI_EN(SPI_RegDef_t *pSPIx,uint8_t EN_DI);
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
+void SPI_IRQconfig(uint8_t IRQ_Numberk, uint8_t EN_DI, uint32_t IRQ_Priority);
 uint8_t FlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag);
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */

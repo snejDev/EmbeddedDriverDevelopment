@@ -39,7 +39,7 @@
 #define NVIC_ICER2			((__vo uint32_t*)0xE000E108)	//ICER2 Address
 #define NVIC_ICER3			((__vo uint32_t*)0xE000E10C)	//ICER3 Address
 //IPR Register - Pointer to Base Address
-#define NVIC_IPR_BASE		((__vo uint32_t*)0xE000E400)			//IPR Base Address
+#define NVIC_IPR_BASE		((__vo uint32_t*)0xE000E400)	//IPR Base Address
 
 //IRQ Number Macros
 #define IRQ_NO_EXTI0		6
@@ -67,7 +67,6 @@
 #define IRQ_PRI_2			2
 #define IRQ_PRI_1			1
 #define IRQ_PRI_0			0
-
 
 //Defining Base addresses for peripherals
 //AHB1 Bus - GPIO Ports
