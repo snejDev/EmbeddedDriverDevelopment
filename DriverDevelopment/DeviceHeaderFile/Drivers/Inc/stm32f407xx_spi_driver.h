@@ -146,6 +146,7 @@ void SPI_EN(SPI_RegDef_t *pSPIx,uint8_t EN_DI);
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
 void SPI_IRQconfig(uint8_t IRQ_Numberk, uint8_t EN_DI, uint32_t IRQ_Priority);
+void SPI_IRQhandler(SPIx_Handle_t *pSPIx_Handle);
 uint8_t SPI_TxDataNB_IT(SPIx_Handle_t *pSPIx_Handle, uint8_t *pTxBuff, uint32_t len);
 uint8_t SPI_RxDataNB_IT(SPIx_Handle_t *pSPIx_Handle, uint8_t *pTxBuff, uint32_t len);
 uint8_t FlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag);
