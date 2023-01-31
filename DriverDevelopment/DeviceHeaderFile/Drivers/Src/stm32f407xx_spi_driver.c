@@ -343,4 +343,52 @@ void SPI_IRQconfig(uint8_t IRQ_Number, uint8_t EN_DI, uint32_t IRQ_Priority)
 	}
 }
 
+/* 	@function				: SPI_TxDataNB_IT
+ * 	@info					: Transmit data in non-blocking mode using interrupts
+ *
+ * 	@param[in]_datatypes	: SPIx_Handle_t*, uint8_t, uint8_t, uint8_t
+ * 	@param[in] variables	: pSPIx_Handle, IRQ_Number, EN_DI, IRQ_Priority
+ * 	@return					: void
+ *
+ * 	@notes					: API for Interrupt configuration
+ */
+uint8_t SPI_TxDataNB_IT(SPIx_Handle_t *pSPIx_Handle, uint8_t *pTxBuff, uint32_t len)
+{
+	if(pSPIx_Handle->TxState==SPI_READY)
+	{
+		//Save the Tx Buffer Address and len information in global variables
+		pSPIx_Handle->pTxBuffer = pTxBuff;
+		pSPIx_Handle->TxLen  = len;
+		//Mark the SPI state as BUSY in Transmission, so next transmission doesnt occur
+		pSPIx_Handle->TxState = SPI_BUSY_TX;
+		//Enable TXIE control bit to request interrupt when TXE flag is set
+		pSPIx_Handle->pSPIx->SPI_CR2 |= (1<<SPI_CR2_TXEIE);
+		//Handle Data Transmission using the ISR
+	}
+	return pSPIx_Handle->TxState;
+}
 
+/* 	@function				: SPI_RxDataNB_IT
+ * 	@info					: Receive data in non-blocking mode using interrupts
+ *
+ * 	@param[in]_datatypes	: SPIx_Handle_t*, uint8_t, uint8_t, uint8_t
+ * 	@param[in] variables	: pSPIx_Handle, IRQ_Number, EN_DI, IRQ_Priority
+ * 	@return					: void
+ *
+ * 	@notes					: API for Interrupt configuration
+ */
+uint8_t SPI_RxDataNB_IT(SPIx_Handle_t *pSPIx_Handle, uint8_t *pRxBuff, uint32_t len)
+{
+	if(pSPIx_Handle->RxState==SPI_READY)
+	{
+		//Save the Rx Buffer Address and len information in global variables
+		pSPIx_Handle->pRxBuffer = pRxBuff;
+		pSPIx_Handle->RxLen  = len;
+		//Mark the SPI state as BUSY in Transmission, so next transmission doesnt occur
+		pSPIx_Handle->RxState = SPI_BUSY_RX;
+		//Enable RXNEIE control bit to request interrupt when RXNE flag is set
+		pSPIx_Handle->pSPIx->SPI_CR2 |= (1<<SPI_CR2_RXNEIE);
+		//Handle Data Transmission using the ISR
+	}
+	return pSPIx_Handle->RxState;
+}

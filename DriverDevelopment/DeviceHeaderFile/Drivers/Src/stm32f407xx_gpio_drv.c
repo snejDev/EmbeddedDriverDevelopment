@@ -328,7 +328,7 @@ void GPIO_IRQconfig(uint8_t IRQ_Number, uint8_t EN_DI, uint32_t IRQ_Priority)
 
 	/**Interrupt Priority Configuration**/
 	uint8_t iprx = IRQ_Number/4;
-	uint8_t shift = ((IRQ_Number%4)*8)+(8-IMPLEMENTED_BITS);		//Implemented bits are not available
+	uint8_t shift = ((IRQ_Number%4)*8)+(8-IMPLEMENTED_BITS); //Implemented bits are not available
 	*(NVIC_IPR_BASE+(iprx)) |= (IRQ_Priority<<shift);
 	//*(NVIC_IPR_BASE+(iprx*4)) |= (IRQ_Priority<<shift);
 	// Note: There is no need for *4, as NVIC_IPR_BASE being a pointer,

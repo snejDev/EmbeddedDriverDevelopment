@@ -7,3 +7,6 @@
 ../Drivers/Src/stm32f407xx_spi_driver.c:247:6:SPI_SSIConfig	16	static
 ../Drivers/Src/stm32f407xx_spi_driver.c:265:6:SPI_SSOEConfig	16	static
 ../Drivers/Src/stm32f407xx_spi_driver.c:285:9:FlagStatus	16	static
+../Drivers/Src/stm32f407xx_spi_driver.c:301:6:SPI_IRQconfig	24	static
+../Drivers/Src/stm32f407xx_spi_driver.c:355:9:SPI_TxDataNB_IT	24	static
+../Drivers/Src/stm32f407xx_spi_driver.c:380:9:SPI_RxDataNB_IT	24	static

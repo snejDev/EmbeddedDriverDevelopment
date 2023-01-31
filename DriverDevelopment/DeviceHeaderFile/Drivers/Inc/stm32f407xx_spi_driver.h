@@ -28,7 +28,13 @@
 #define SPI_CR1_BIDIMODE	15
 
 //SPI_CR2 Register Bit Fields
-#define SPI_CR2_SSOE	2
+#define SPI_CR2_RXDMAEN		0
+#define SPI_CR2_TXDMAEN		1
+#define SPI_CR2_SSOE		2
+#define SPI_CR2_FRF			4
+#define SPI_CR2_ERRIE		5
+#define SPI_CR2_RXNEIE		6
+#define SPI_CR2_TXEIE		7
 
 //SPI SR Register Bit Fields
 #define SPI_SR_RXNE		0
@@ -115,7 +121,20 @@ typedef struct
 {
 	SPI_RegDef_t *pSPIx;			//Store the base address of SPIx Register
 	SPIx_Config_t SPIx_PinConfig;	//SPI Pin configuration
+
+	//Interrupt Tx and Rx interrupt variables
+	uint8_t *pTxBuffer;
+	uint8_t *pRxBuffer;
+	uint32_t TxLen;
+	uint32_t RxLen;
+	uint8_t TxState;
+	uint8_t RxState;
 }SPIx_Handle_t;
+
+//SPI Tx and Rx application states
+#define SPI_READY		0
+#define SPI_BUSY_TX		1
+#define SPI_BUSY_RX		2
 
 //API Prototypes
 void SPI_PCLK_Ctrl(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
@@ -127,6 +146,8 @@ void SPI_EN(SPI_RegDef_t *pSPIx,uint8_t EN_DI);
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EN_DI);
 void SPI_IRQconfig(uint8_t IRQ_Numberk, uint8_t EN_DI, uint32_t IRQ_Priority);
+uint8_t SPI_TxDataNB_IT(SPIx_Handle_t *pSPIx_Handle, uint8_t *pTxBuff, uint32_t len);
+uint8_t SPI_RxDataNB_IT(SPIx_Handle_t *pSPIx_Handle, uint8_t *pTxBuff, uint32_t len);
 uint8_t FlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag);
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */
